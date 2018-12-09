@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "structures.h"
+#include "tp4_abr.h"
+#include "affichage.h"
 T_Noeud *abr_creer_noeud(int valeur){
   T_Noeud* tn = (T_Noeud*)malloc(sizeof(T_Noeud));
   if(tn == NULL)
@@ -22,6 +23,7 @@ void abr_prefixe(T_Arbre abr){
   if(abr->gauche != NULL){ abr_prefixe(abr->gauche);}
   if(abr->droit != NULL){ abr_prefixe(abr->droit);}
 }
+
 void abr_inserer(int valeur,T_Arbre *abr){
   T_Noeud* y = NULL;
   T_Noeud* x = *abr;
@@ -107,17 +109,44 @@ printf("Nodo suprimido correctamente ! \n" );
 
 }
 
-int main() {
+void abr_clone(T_Arbre original, T_Arbre* clone, T_Noeud* parent){
+
+if(original -> gauche != NULL){
+parent = original;
+*clone = parent;
+abr_clone(original->gauche,clone,parent);
+}else if(original->droit != NULL){
+  parent = original;
+  *clone = parent;
+abr_clone(original->droit,clone,parent);
+}
+else
+parent = original;
+*clone = parent;
+}
+
+
+int main(int argc, char const *argv[]) {
+
   T_Arbre abr = NULL;
   abr_inserer(11,&abr);
+
   abr_inserer(2,&abr);
   abr_inserer(1,&abr);
   abr_inserer(6,&abr);
   abr_inserer(13,&abr);
   abr_inserer(17,&abr);
   abr_inserer(15,&abr);
+
+  //abr_supprimer(2,&abr);
+  printf("PRINCIPAL _______________ \n" );
   abr_prefixe(abr);
-  abr_supprimer(13,&abr);
-  abr_prefixe(abr);
+  T_Arbre clone = NULL;
+  printf("CLONACION _______________ \n" );
+  abr_clone(abr,&clone,NULL);
+  abr_prefixe(clone);
+  printf("FIN CLONACION _______________ \n" );
+//  abr_prefixe(abr);
+
   return 0;
 }
