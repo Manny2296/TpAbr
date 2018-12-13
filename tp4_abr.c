@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "tp4_abr.h"
 #include "affichage.h"
+#include "tp4_cousu.h"
 T_Noeud *abr_creer_noeud(int valeur){
   T_Noeud* tn = (T_Noeud*)malloc(sizeof(T_Noeud));
   if(tn == NULL)
@@ -137,7 +138,7 @@ int main(int argc, char const *argv[]) {
   abr_inserer(13,&abr);
   abr_inserer(17,&abr);
   abr_inserer(15,&abr);
-
+  abr_inserer(4,&abr);
   //abr_supprimer(2,&abr);
   printf("PRINCIPAL _______________ \n" );
   abr_prefixe(abr);
@@ -147,6 +148,8 @@ int main(int argc, char const *argv[]) {
   abr_prefixe(clone);
   printf("FIN CLONACION _______________ \n" );
 //  abr_prefixe(abr);
+
+
 
   return 0;
 }
