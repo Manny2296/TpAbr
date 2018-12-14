@@ -11,57 +11,87 @@ T_Noeud_C* cousu_creer_noeud(int valeur){
   return noeud_c;
 }
 void cousu_prefixe(T_Arbre_C arbre){
-  printf("Noeud --> %d  suc %d prec %d\n", arbre->valeur,arbre->suceseur,arbre->predeceseur );
+  printf("Noeud --> %d  pred %d succ %d\n", arbre->valeur,arbre->predeceseur,arbre->suceseur );
   printf(" -----> FG : " );
-  if(arbre->gauche == NULL){printf("NULL ");}
-  else{printf("%d  suc %d prec %d ",arbre->gauche->valeur,arbre->suceseur,arbre->predeceseur);}
+  if(arbre->gauche == NULL ){printf("NULL ");}
+  else{printf("%d  ",arbre->gauche->valeur);}
   printf(" -- FD : ");
   if( arbre->droit == NULL){  printf("NULL \n"); }
-  else{printf("%d   suc %d prec %d \n",arbre->droit->valeur,arbre->suceseur,arbre->predeceseur);}
+  else{printf("%d  \n",arbre->droit->valeur);}
   if(arbre->gauche != NULL){ cousu_prefixe(arbre->gauche);}
   if(arbre->droit != NULL){ cousu_prefixe(arbre->droit);}
 }
 void cousu_inserer(int valeur,T_Arbre_C *arbre){
+
   T_Noeud_C* y = NULL;
   T_Noeud_C* x = *arbre;
   while(x!= NULL){
     y = x;
+    printf("primer %d %d %d\n",x->valeur,x->suceseur,x->predeceseur );
+
     if(valeur < x->valeur){
+
+      printf("entre %d %d %d\n",x->valeur,x->suceseur,x->predeceseur );
       x = x->gauche;
     }
     else{
-      x = x->droit;
+
+      printf("entre %d %d %d\n",x->valeur,x->suceseur,x->predeceseur );
+
+     x = x->droit;
+
     }
   }
-
+    T_Noeud_C* noeud = cousu_creer_noeud(valeur);
     if(y == NULL){
 
-      *arbre = cousu_creer_noeud(valeur);
+      *arbre = noeud;
 
     }
     else if(valeur < y ->valeur){
-      y->gauche = cousu_creer_noeud(valeur);
-      y ->predeceseur= 0 ;
-      //  y->predeceseur = 0;
-      y->gauche->suceseur = y->suceseur;
 
 
-// 1101
-
-
+    //  noeud->droit = y;
+      noeud->gauche = y->gauche;
+      y ->predeceseur= 0;
+      y->gauche = noeud;
 
 
     }
     else{
 
-      y->droit = cousu_creer_noeud(valeur);
+      //noeud ->gauche = y;
+      noeud->droit = y->droit;
        y ->suceseur = 0;
-
-
+      y->droit = noeud;
     }
 
 }
+T_Noeud_C* trouver_gauche(T_Arbre_C *arbre){
+  T_Noeud_C* plus_gauche = *arbre;
+  while(plus_gauche->gauche != NULL){
 
+    plus_gauche = plus_gauche->gauche;
+
+  }
+  return plus_gauche;
+}
+void cousu_infixe(T_Arbre_C *arbre){
+  printf("PARCOURS INFIXE : _____________\n" );
+  T_Noeud_C* courant = trouver_gauche(arbre);
+  while(courant != NULL){
+
+      printf("Noeud : %d \n", courant->valeur );
+      if (courant->suceseur == 1){
+        printf(" courant if %d \n", courant->valeur );
+        courant = courant ->droit;
+        printf(" courant if %d \n", courant->valeur );
+      }
+        else
+            courant = trouver_gauche(&courant->droit);
+            printf("courant    %d\n", courant->valeur );
+  }
+}
 
 int main(int argc, char const *argv[]) {
   T_Arbre_C cousu = NULL;
@@ -74,5 +104,6 @@ int main(int argc, char const *argv[]) {
   cousu_inserer(15,&cousu);
   cousu_inserer(4,&cousu);
   cousu_prefixe(cousu);
+  cousu_infixe(&cousu);
   return 0;
 }
