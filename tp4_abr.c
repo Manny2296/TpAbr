@@ -81,25 +81,64 @@ void abr_supprimer(int valeur,T_Arbre *abr)
     T_Noeud* pere = NULL;
     T_Noeud* noeud = *abr;
 
-   while(noeud != NULL && noeud->valeur != valeur)
+    while(noeud != NULL && noeud->valeur != valeur)
     {
         pere = noeud;
         if(noeud->valeur < valeur) noeud = noeud->droit;
         else noeud = noeud->gauche;
     }
 
+    if(noeud == NULL)
+    {
+        printf("Erreur : valeur introuvable !\n\n");
+        return;
+    }
+
     // ETAPE 2 : Supprimer le noeud et faire les adaptations nécessaires
     if(noeud->gauche == NULL && noeud->droit == NULL) // si pas de fils
     {
+        // si le pere n'existe pas alors il n'y a plus d'arbre
+        if(pere == NULL)
+        {
+            free(noeud);
+            *abr = NULL;
+            return;
+        }
+
         // Si on doit supprimer le noeud de gauche
         if(pere->gauche != NULL && pere->gauche->valeur == valeur)
             pere->gauche = NULL;
         else // si on doit supprimer le noeud de droite
             pere->droit = NULL;
+
+        free(noeud); // On libere la mémoire du noeud à supprimer
     }
     else if(noeud->droit != NULL && noeud->gauche != NULL) // si deux fils
     {
-        // TODO
+        // Etape 2.1 : On recherche le successeur (noeud le plus a gauche dans le sous arbre droit)
+        T_Noeud* successeur = noeud->droit;
+        T_Noeud* pereSuccesseur = noeud;
+        while(successeur->gauche != NULL)
+        {
+            pereSuccesseur = successeur;
+            successeur = successeur->gauche;
+        }
+
+        // Etape 2.2 : On inverse les deux cles.
+        int tmp = noeud->valeur;
+        noeud->valeur = successeur->valeur;
+        successeur->valeur = tmp;
+
+        // Etape 2.3 : in supprime l'ancien successeur comme etant un noeud a un fils.
+        if(pereSuccesseur == noeud)
+        {
+            pereSuccesseur->droit = successeur->droit;
+        }
+        else
+        {
+            pereSuccesseur->gauche = successeur->droit;
+        }
+        free(successeur); // enfin on libere la memoire.
     }
     else { // si un seul fils
         T_Noeud* fils = NULL; // On commence par stocker le noeud du fils à supprimer
@@ -107,26 +146,39 @@ void abr_supprimer(int valeur,T_Arbre *abr)
         else fils = noeud->droit;
 
         // On lit ensuite le pere du noeud à supprimer à son fils
-        if(pere->gauche != NULL && pere->gauche->valeur == valeur) pere->gauche = fils;
-        else pere->droit = fils;
+        if(pere != NULL && pere->gauche != NULL && pere->gauche->valeur == valeur) pere->gauche = fils;
+        else if(pere != NULL) pere->droit = fils;
+        else *abr = fils;
+        free(noeud); // On libere la mémoire du noeud à supprimer
     }
 
-    free(noeud); // On libere la mémoire du noeud à supprimer
+    printf("                      Valeur supprimee !\n\n");
+
 }
 
 void abr_clone(T_Arbre original, T_Arbre* clone, T_Noeud* parent)
 {
-    parent = original;
-
-    if(original->gauche != NULL) { // si on a un fils gauche
-        *clone = parent; // on copie la racine
-        abr_clone(original->gauche, clone, parent); // on recommence le traitement sur le fils gauche
-    } else if(original->droit != NULL) { // si on a un fils droit
-        *clone = parent; // on copie la racine
-        abr_clone(original->droit, clone, parent); // on recommence le traitement sur le fils droit
+    if(parent == NULL)
+    {
+        if(original != NULL)
+        {
+            *clone = abr_creer_noeud(original->valeur);
+            abr_clone(original, clone, *clone);
+        }
+        return ;
     }
 
-    *clone = parent;
+    if(original->gauche != NULL)
+    {
+        parent->gauche = abr_creer_noeud(original->gauche->valeur);
+        abr_clone(original->gauche, clone, parent->gauche);
+    }
+
+    if(original->droit != NULL)
+    {
+        parent->droit = abr_creer_noeud(original->droit->valeur);
+        abr_clone(original->droit, clone, parent->droit);
+    }
 
 }
 

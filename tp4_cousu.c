@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "tp4_cousu.h"
+#include "affichage.h"
 
 T_Noeud_C* cousu_creer_noeud(int valeur)
 {
@@ -89,42 +90,61 @@ void cousu_infixe(T_Arbre_C *arbre)
 
     // ETAPE 1 : on va chercher le noeud le plus a gauche.
     T_Noeud_C* noeud = *arbre;
-    affichageInfixeDebut();
-    while(noeud != NULL) {
-        while (noeud != NULL && noeud->predecesseur == 0)
-            noeud = noeud->gauche;
+    if(noeud == NULL) printf("L'arbre est vide !\n");
+    else
+    {
+        affichageInfixeDebut();
+        while(noeud != NULL) {
+            while (noeud != NULL && noeud->predecesseur == 0)
+                noeud = noeud->gauche;
 
-        if(noeud == NULL) // si pas de noeud dans l'arbre
-            return ;
-        affichageInfixeNombre(noeud->valeur);
-        affichageInfixeMilieu();
-
-        while(noeud->successeur == 1 && noeud->droit != NULL) {
-            noeud = noeud->droit;
+            if(noeud == NULL) // si pas de noeud dans l'arbre
+                return ;
             affichageInfixeNombre(noeud->valeur);
             affichageInfixeMilieu();
+
+            while(noeud->successeur == 1 && noeud->droit != NULL) {
+                noeud = noeud->droit;
+                affichageInfixeNombre(noeud->valeur);
+                affichageInfixeMilieu();
+            }
+            noeud = noeud->droit;
         }
-        noeud = noeud->droit;
+        affichageInfixeFin();
     }
-    affichageInfixeFin();
 }
 
-void abr_to_cousu(T_Arbre abr, T_Arbre_C *clone, T_Noeud* parent)
+void abr_to_cousu(T_Arbre abr, T_Arbre_C *clone, T_Noeud_C* parent)
 {
-    // TODO
-/*
-    parent = abr;
-
-    if(abr->gauche != NULL) { // si on a un fils gauche
-        *clone = parent; // on copie la racine
-        abr_clone(abr->gauche, clone, parent); // on recommence le traitement sur le fils gauche
-    } else if(abr->droit != NULL) { // si on a un fils droit
-        *clone = parent; // on copie la racine
-        abr_clone(abr->droit, clone, parent); // on recommence le traitement sur le fils droit
+    if(parent == NULL)
+    {
+        if(abr != NULL)
+        {
+            *clone = cousu_creer_noeud(abr->valeur);
+            abr_to_cousu(abr, clone, *clone);
+        }
+        return ;
     }
 
-    *clone = parent;
-*/
+    if(abr->gauche != NULL)
+    {
+        parent->predecesseur = 0;
+        T_Noeud_C* tmp = parent->gauche;
+        parent->gauche = cousu_creer_noeud(abr->gauche->valeur);
+        parent->gauche->droit = parent;
+        parent->gauche->gauche = tmp;
+        abr_to_cousu(abr->gauche, clone, parent->gauche);
+    }
+
+    if(abr->droit != NULL)
+    {
+        parent->successeur = 0;
+        T_Noeud_C* tmp = parent->droit;
+        parent->droit = cousu_creer_noeud(abr->droit->valeur);
+        parent->droit->gauche = parent;
+        parent->droit->droit = tmp;
+        abr_to_cousu(abr->droit, clone, parent->droit);
+    }
 }
 
 void detruire_arbre_cousu(T_Arbre_C *arbre)

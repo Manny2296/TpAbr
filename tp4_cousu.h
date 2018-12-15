@@ -17,7 +17,7 @@ T_Noeud_C *cousu_creer_noeud(int valeur);
 void cousu_inserer(int valeur,T_Arbre_C *arbre);
 void cousu_prefixe(T_Arbre_C arbre);
 void cousu_infixe(T_Arbre_C *arbre);
-void abr_to_cousu(T_Arbre abr, T_Arbre_C *clone, T_Noeud* parent);
+void abr_to_cousu(T_Arbre abr, T_Arbre_C *clone, T_Noeud_C* parent);
 void detruire_arbre_cousu(T_Arbre_C *arbre);
 
 

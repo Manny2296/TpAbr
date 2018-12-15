@@ -48,10 +48,10 @@ void menu_principal()
     }
 
     if(strcmp(choix, "C") == 0)
-        abr_clone(abr, &clone, abr);
+        abr_clone(abr, &clone, NULL);
 
     if(strcmp(choix, "CA") == 0)
-        abr_to_cousu(abr, &abrc, abr);
+        abr_to_cousu(abr, &abrc, NULL);
 
     if(strcmp(choix, "VC") == 0)
         abr_prefixe(clone);
@@ -98,7 +98,6 @@ void affichageSupression(int* nb)
     printf("            Entier            │ ");
     scanf("%d", nb);
     printf("\n");
-    printf("                      Valeur supprimee !\n\n");
 }
 
 void affichageInfixeDebut()
@@ -124,9 +123,10 @@ void affichageInfixeNombre(int nb)
     if(nb == 0) printf("                             0                              ");
     else
     {
-        for(i = 0 ; i < (floor(log(nb))+1)/2 ; i++) printf(" ");
+        if(nb > 0) printf(" ");
+        for(i = 0 ; i < (55-floor(log10(abs(nb)))+1)/2 ; i++) printf(" ");
         printf("%d", nb);
-        for(i = 0 ; i < (floor(log(nb)))/2 ; i++) printf(" ");
+        for(i = 0 ; i < (58-floor(log10(abs(nb)))+1)/2 ; i++) printf(" ");
     }
     printf("│\n");
 }
