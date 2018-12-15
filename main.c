@@ -25,7 +25,7 @@ int main() {
   abr_prefixe(clone);
   printf("FIN CLONACION _______________ \n" );
 //  abr_prefixe(abr);
-*/
+detruire_arbre(&abr);
 
   T_Arbre_C cousu = NULL;
   cousu_inserer(11,&cousu);
@@ -37,6 +37,9 @@ int main() {
   cousu_inserer(15,&cousu);
   cousu_prefixe(cousu);
   cousu_infixe(&cousu);
+detruire_arbre_cousu(&cousu);
+cousu_infixe(&cousu);*/
 
+    menu_principal();
   return 0;
 }

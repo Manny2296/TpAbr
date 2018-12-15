@@ -129,3 +129,13 @@ void abr_clone(T_Arbre original, T_Arbre* clone, T_Noeud* parent)
     *clone = parent;
 
 }
+
+void detruire_arbre(T_Arbre *abr)
+{
+    if(*abr == NULL) return ;
+
+    detruire_arbre(&(*abr)->gauche);
+    detruire_arbre(&(*abr)->droit);
+
+    free(*abr);
+}

@@ -89,19 +89,50 @@ void cousu_infixe(T_Arbre_C *arbre)
 
     // ETAPE 1 : on va chercher le noeud le plus a gauche.
     T_Noeud_C* noeud = *arbre;
-
+    affichageInfixeDebut();
     while(noeud != NULL) {
         while (noeud != NULL && noeud->predecesseur == 0)
             noeud = noeud->gauche;
 
         if(noeud == NULL) // si pas de noeud dans l'arbre
             return ;
+        affichageInfixeNombre(noeud->valeur);
+        affichageInfixeMilieu();
 
-        printf("%d\n", noeud->valeur);
         while(noeud->successeur == 1 && noeud->droit != NULL) {
             noeud = noeud->droit;
-            printf("%d\n", noeud->valeur);
+            affichageInfixeNombre(noeud->valeur);
+            affichageInfixeMilieu();
         }
         noeud = noeud->droit;
     }
+    affichageInfixeFin();
+}
+
+void abr_to_cousu(T_Arbre abr, T_Arbre_C *clone, T_Noeud* parent)
+{
+    // TODO
+/*
+    parent = abr;
+
+    if(abr->gauche != NULL) { // si on a un fils gauche
+        *clone = parent; // on copie la racine
+        abr_clone(abr->gauche, clone, parent); // on recommence le traitement sur le fils gauche
+    } else if(abr->droit != NULL) { // si on a un fils droit
+        *clone = parent; // on copie la racine
+        abr_clone(abr->droit, clone, parent); // on recommence le traitement sur le fils droit
+    }
+
+    *clone = parent;
+*/
+}
+
+void detruire_arbre_cousu(T_Arbre_C *arbre)
+{
+    if(*arbre == NULL) return ;
+
+    if((*arbre)->predecesseur == 0) detruire_arbre_cousu(&(*arbre)->gauche);
+    if((*arbre)->successeur == 0) detruire_arbre_cousu(&(*arbre)->droit);
+
+    free(*arbre);
 }
